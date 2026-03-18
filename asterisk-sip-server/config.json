@@ -16,7 +16,8 @@
   "ports_description": {
     "8089/tcp": "WebSocket (WSS) for WebRTC",
     "5060/tcp": "SIP TCP",
-    "5060/udp": "SIP UDP"
+    "5060/udp": "SIP UDP",
+    "10000-10100/udp": "RTP Media Ports"
   },
   "host_network": true,
   "options": {
