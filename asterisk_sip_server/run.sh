@@ -2,7 +2,7 @@
 set -e
 
 # ============================================================
-# Asterisk Server Add-on — Entrypoint (ARM-Optimized)
+# Asterisk Server Add-on — Entrypoint (Bullseye Stable)
 # ============================================================
 
 CONFIG_PATH=/data/options.json
@@ -41,12 +41,12 @@ sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/pjsip.conf
 sed -i "s|__CERT_FILE__|${CERT_DIR}/asterisk.crt|g" /etc/asterisk/http.conf
 sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/http.conf
 
-# ---------- Start Node.js Web UI Server ----------
+# ---------- Start Services ----------
+
 bashio::log.info "Starting Asterisk Web UI Dashboard..."
 cd /app
 node server.js &
 
-# ---------- Start Asterisk Engine ----------
-bashio::log.info "Starting Asterisk PBX Service (Foreground)..."
-# Using -f (foreground) to keep the container alive and -vvv for logs
+bashio::log.info "Starting Asterisk PBX Service..."
+# Start asterisk in the foreground to keep container running
 exec asterisk -f -vvv -C /etc/asterisk/asterisk.conf
