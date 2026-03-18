@@ -44,5 +44,9 @@ sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/pjsip.conf
 sed -i "s|__CERT_FILE__|${CERT_DIR}/asterisk.crt|g" /etc/asterisk/http.conf
 sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/http.conf
 
+echo "[INFO] Starting Asterisk Web UI..."
+cd /app
+node server.js &
+
 echo "[INFO] Starting Asterisk PBX..."
 exec asterisk -f -vvv -C /etc/asterisk/asterisk.conf

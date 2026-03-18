@@ -14,12 +14,17 @@
     "10000-10100/udp": null
   },
   "ports_description": {
+    "8090/tcp": "Web UI (via ingress)",
     "8089/tcp": "WebSocket (WSS) for WebRTC",
     "5060/tcp": "SIP TCP",
     "5060/udp": "SIP UDP",
     "10000-10100/udp": "RTP Media Ports"
   },
   "host_network": true,
+  "ingress": true,
+  "ingress_port": 8090,
+  "panel_icon": "mdi:phone-settings",
+  "panel_title": "Asterisk Panel",
   "options": {
     "agent_password": "changeme_agent",
     "client_default_password": "changeme_client",
