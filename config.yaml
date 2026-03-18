@@ -2,7 +2,7 @@ name: "Asterisk SIP Server"
 version: "1.0.0"
 slug: "asterisk-sip-server"
 description: "Asterisk PBX server with PJSIP and WebRTC support for the Customer Support System"
-url: "https://github.com/your-username/ha-customer-support"
+url: "https://github.com/ishit-archietectlabs/asterisk-server"
 arch:
   - amd64
   - aarch64
