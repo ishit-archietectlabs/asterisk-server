@@ -1,21 +1,22 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-# Install Asterisk, Node.js, and dependencies
-RUN apk add --no-cache \
-    asterisk \
-    asterisk-pjsip \
-    asterisk-srtp \
-    asterisk-sounds-en \
-    asterisk-sounds-moh \
-    nodejs \
-    npm \
-    openssl \
-    curl \
-    bash \
-    jq
+# Install Asterisk, Node.js, and dependencies (Debian/Ubuntu)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        asterisk \
+        asterisk-core-sounds-en \
+        asterisk-moh-opsound \
+        nodejs \
+        npm \
+        openssl \
+        curl \
+        bash \
+        jq \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create directories
+# Create required Asterisk and app directories
 RUN mkdir -p /etc/asterisk \
     /var/run/asterisk \
     /var/lib/asterisk \
@@ -34,7 +35,7 @@ COPY package.json server.js ./
 COPY public/ ./public/
 
 # Install Node.js dependencies
-RUN npm install --production
+RUN if [ -f package.json ]; then npm install --production; fi
 
 # Copy run script
 COPY run.sh /
