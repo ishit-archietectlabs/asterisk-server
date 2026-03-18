@@ -1,26 +1,17 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.0.0",
-  "slug": "asterisk-sip-server",
+  "version": "1.0.1",
+  "slug": "asterisk_sip_server",
   "description": "Asterisk PBX server with PJSIP and WebRTC support for the Customer Support System",
   "url": "https://github.com/ishit-archietectlabs/asterisk-server",
-  "arch": ["amd64", "aarch64", "armv7", "i386"],
-  "startup": "system",
+  "arch": [
+    "amd64",
+    "aarch64",
+    "armv7",
+    "i386"
+  ],
+  "startup": "services",
   "boot": "auto",
-  "ports": {
-    "8090/tcp": null,
-    "8089/tcp": 8089,
-    "5060/tcp": 5060,
-    "5060/udp": 5060,
-    "10000-10100/udp": null
-  },
-  "ports_description": {
-    "8090/tcp": "Web UI (via ingress)",
-    "8089/tcp": "WebSocket (WSS) for WebRTC",
-    "5060/tcp": "SIP TCP",
-    "5060/udp": "SIP UDP",
-    "10000-10100/udp": "RTP Media Ports"
-  },
   "host_network": true,
   "ingress": true,
   "ingress_port": 8090,
@@ -40,5 +31,8 @@
     "certfile": "str",
     "keyfile": "str"
   },
-  "map": ["config:rw", "ssl:ro"]
+  "map": [
+    "config:rw",
+    "ssl:ro"
+  ]
 }
