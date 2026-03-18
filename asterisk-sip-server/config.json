@@ -8,6 +8,7 @@
   "startup": "system",
   "boot": "auto",
   "ports": {
+    "8090/tcp": null,
     "8089/tcp": 8089,
     "5060/tcp": 5060,
     "5060/udp": 5060,
