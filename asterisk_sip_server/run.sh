@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/with-contenv bashio
 set -e
 
 # ============================================================
@@ -9,30 +9,30 @@ set -e
 
 CONFIG_PATH=/data/options.json
 
-AGENT_PASSWORD=$(jq -r '.agent_password' $CONFIG_PATH)
-CLIENT_DEFAULT_PASSWORD=$(jq -r '.client_default_password' $CONFIG_PATH)
-DOMAIN=$(jq -r '.domain' $CONFIG_PATH)
-CERTFILE=$(jq -r '.certfile' $CONFIG_PATH)
-KEYFILE=$(jq -r '.keyfile' $CONFIG_PATH)
+AGENT_PASSWORD=$(bashio::config 'agent_password')
+CLIENT_DEFAULT_PASSWORD=$(bashio::config 'client_default_password')
+DOMAIN=$(bashio::config 'domain')
+CERTFILE=$(bashio::config 'certfile')
+KEYFILE=$(bashio::config 'keyfile')
 
 # ---------- TLS Certificates ----------
 CERT_DIR="/opt/certs"
-if [ -n "$CERTFILE" ] && [ -f "/ssl/$CERTFILE" ]; then
-    echo "[INFO] Using provided TLS certificates"
-    cp "/ssl/$CERTFILE" "$CERT_DIR/asterisk.crt"
-    cp "/ssl/$KEYFILE" "$CERT_DIR/asterisk.key"
+if bashio::config.has_value 'certfile' && [ -f "/ssl/${CERTFILE}" ]; then
+    bashio::log.info "Using provided TLS certificates"
+    cp "/ssl/${CERTFILE}" "${CERT_DIR}/asterisk.crt"
+    cp "/ssl/${KEYFILE}" "${CERT_DIR}/asterisk.key"
 else
-    echo "[INFO] Generating self-signed TLS certificates"
+    bashio::log.info "Generating self-signed TLS certificates"
     openssl req -x509 -nodes -newkey rsa:2048 \
-        -keyout "$CERT_DIR/asterisk.key" \
-        -out "$CERT_DIR/asterisk.crt" \
+        -keyout "${CERT_DIR}/asterisk.key" \
+        -out "${CERT_DIR}/asterisk.crt" \
         -days 3650 \
-        -subj "/CN=$DOMAIN" 2>/dev/null
+        -subj "/CN=${DOMAIN}" 2>/dev/null
 fi
 
 # Combine for Asterisk
-cat "$CERT_DIR/asterisk.crt" "$CERT_DIR/asterisk.key" > "$CERT_DIR/asterisk.pem"
-chmod 644 "$CERT_DIR/asterisk.pem" "$CERT_DIR/asterisk.crt" "$CERT_DIR/asterisk.key"
+cat "${CERT_DIR}/asterisk.crt" "${CERT_DIR}/asterisk.key" > "${CERT_DIR}/asterisk.pem"
+chmod 644 "${CERT_DIR}/asterisk.pem" "${CERT_DIR}/asterisk.crt" "${CERT_DIR}/asterisk.key"
 
 # ---------- Template Asterisk Config ----------
 # Replace placeholders in pjsip.conf
@@ -44,9 +44,9 @@ sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/pjsip.conf
 sed -i "s|__CERT_FILE__|${CERT_DIR}/asterisk.crt|g" /etc/asterisk/http.conf
 sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/http.conf
 
-echo "[INFO] Starting Asterisk Web UI..."
+bashio::log.info "Starting Asterisk Web UI..."
 cd /app
 node server.js &
 
-echo "[INFO] Starting Asterisk PBX..."
+bashio::log.info "Starting Asterisk PBX..."
 exec asterisk -f -vvv -C /etc/asterisk/asterisk.conf
