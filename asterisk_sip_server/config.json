@@ -1,6 +1,6 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "slug": "asterisk_sip_server",
   "description": "Asterisk PBX server with PJSIP and WebRTC support for the Customer Support System",
   "url": "https://github.com/ishit-archietectlabs/asterisk-server",
@@ -13,10 +13,14 @@
   "init": false,
   "log_level": "info",
   "hassio_api": true,
-  "capabilities": [
+  "privileged": [
+    "SYS_ADMIN"
+  ],
+  "cap_add": [
     "NET_ADMIN",
     "SYS_NICE",
-    "SYS_RESOURCE"
+    "SYS_RESOURCE",
+    "SYS_PTRACE"
   ],
   "startup": "services",
   "boot": "auto",
