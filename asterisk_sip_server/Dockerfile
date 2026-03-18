@@ -1,22 +1,21 @@
 ARG BUILD_FROM
 FROM ${BUILD_FROM}
 
-# Install Asterisk, Node.js, and dependencies (Debian/Ubuntu)
+# Install Asterisk, Node.js, and essential tools for ARM/RPI (Debian Bookworm)
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         asterisk \
-        asterisk-core-sounds-en \
-        asterisk-moh-opsound \
         nodejs \
         npm \
-        openssl \
         curl \
         bash \
         jq \
+        openssl \
+        asterisk-core-sounds-en \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create required Asterisk and app directories
+# Set standard Asterisk and App directories
 RUN mkdir -p /etc/asterisk \
     /var/run/asterisk \
     /var/lib/asterisk \

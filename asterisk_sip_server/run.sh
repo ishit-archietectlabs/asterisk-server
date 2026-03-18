@@ -2,9 +2,7 @@
 set -e
 
 # ============================================================
-# Asterisk Server Add-on — Entrypoint (Debian)
-# Reads HA options, generates TLS certs, templates configs,
-# and starts Asterisk in the foreground.
+# Asterisk Server Add-on — Entrypoint (ARM-Optimized)
 # ============================================================
 
 CONFIG_PATH=/data/options.json
@@ -35,7 +33,6 @@ cat "${CERT_DIR}/asterisk.crt" "${CERT_DIR}/asterisk.key" > "${CERT_DIR}/asteris
 chmod 644 "${CERT_DIR}/asterisk.pem" "${CERT_DIR}/asterisk.crt" "${CERT_DIR}/asterisk.key"
 
 # ---------- Template Asterisk Config ----------
-# Replace placeholders in pjsip.conf
 sed -i "s|__AGENT_PASSWORD__|${AGENT_PASSWORD}|g" /etc/asterisk/pjsip.conf
 sed -i "s|__CLIENT_PASSWORD__|${CLIENT_DEFAULT_PASSWORD}|g" /etc/asterisk/pjsip.conf
 sed -i "s|__DOMAIN__|${DOMAIN}|g" /etc/asterisk/pjsip.conf
@@ -44,12 +41,12 @@ sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/pjsip.conf
 sed -i "s|__CERT_FILE__|${CERT_DIR}/asterisk.crt|g" /etc/asterisk/http.conf
 sed -i "s|__KEY_FILE__|${CERT_DIR}/asterisk.key|g" /etc/asterisk/http.conf
 
-# ---------- Start Node.js Web UI ----------
-bashio::log.info "Starting Asterisk Web UI (Node.js)..."
+# ---------- Start Node.js Web UI Server ----------
+bashio::log.info "Starting Asterisk Web UI Dashboard..."
 cd /app
 node server.js &
 
-# ---------- Start Asterisk ----------
-bashio::log.info "Starting Asterisk PBX..."
-# -f foreground | -vvv verbose
+# ---------- Start Asterisk Engine ----------
+bashio::log.info "Starting Asterisk PBX Service (Foreground)..."
+# Using -f (foreground) to keep the container alive and -vvv for logs
 exec asterisk -f -vvv -C /etc/asterisk/asterisk.conf
