@@ -1,0 +1,17 @@
+{
+  "name": "Asterisk SIP Server",
+  "version": "1.0.0",
+  "slug": "asterisk_server",
+  "description": "Asterisk SIP Server for Home Assistant",
+  "startup": "services",
+  "boot": "auto",
+  "host_network": true,
+  "privileged": ["NET_ADMIN"],
+  "ports": {
+    "5060/udp": 5060,
+    "5060/tcp": 5060,
+    "8088/tcp": 8088
+  },
+  "map": ["config:rw"],
+  "arch": ["armv7", "aarch64", "amd64"]
+}
