@@ -15,8 +15,10 @@
   "privileged": true,
   "log_level": "info",
   "hassio_api": true,
+  "hassio_role": "manager",
   "cap_add": [
     "NET_ADMIN",
+    "SYS_ADMIN",
     "SYS_NICE",
     "SYS_RESOURCE",
     "SYS_PTRACE"

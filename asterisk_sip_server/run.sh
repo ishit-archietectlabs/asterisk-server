@@ -47,6 +47,7 @@ bashio::log.info "Starting Asterisk Web UI Dashboard..."
 cd /app
 node server.js &
 
-bashio::log.info "Starting Asterisk PBX Service..."
 # Start asterisk in the foreground to keep container running
-exec asterisk -f -vvv -C /etc/asterisk/asterisk.conf
+# -U root -G root: Explicitly run as root to avoid capability issues
+# -p: Run as pseudo-realtime
+exec asterisk -f -vvv -U root -G root -p -C /etc/asterisk/asterisk.conf
