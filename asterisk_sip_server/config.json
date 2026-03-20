@@ -1,6 +1,6 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "slug": "asterisk_sip_server",
   "description": "Asterisk PBX server with PJSIP and WebRTC support for the Customer Support System",
   "url": "https://github.com/ishit-archietectlabs/asterisk-server",
@@ -43,9 +43,5 @@
     "domain": "str",
     "certfile": "str",
     "keyfile": "str"
-  },
-  "map": [
-    "config:rw",
-    "ssl:ro"
-  ]
+  }
 }
