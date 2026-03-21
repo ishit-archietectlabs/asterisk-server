@@ -1,5 +1,5 @@
 #!/usr/bin/with-contenv bashio
 
-bashio::log.info "Starting Asterisk..."
+bashio::log.info "Starting Asterisk service..."
 
 exec asterisk -f -vvv
