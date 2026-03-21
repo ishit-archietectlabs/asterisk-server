@@ -20,6 +20,44 @@ def save_data(data):
     with open(DATA_FILE, "w") as f:
         json.dump(data, f)
 
+def generate_pjsip(endpoints):
+    os.makedirs("/etc/asterisk", exist_ok=True)
+    config = """
+[transport-udp]
+type=transport
+protocol=udp
+bind=0.0.0.0
+"""
+
+    for ep in endpoints:
+        ext = ep["extension"]
+        user = ep["username"]
+        pwd = ep["password"]
+
+        config += f"""
+
+[{ext}]
+type=endpoint
+context=default
+disallow=all
+allow=ulaw
+auth={ext}
+aors={ext}
+
+[{ext}]
+type=auth
+auth_type=userpass
+username={user}
+password={pwd}
+
+[{ext}]
+type=aor
+max_contacts=1
+"""
+
+    with open("/etc/asterisk/pjsip.conf", "w") as f:
+        f.write(config)
+
 @app.route("/")
 def index():
     return send_from_directory("/app/public", "index.html")
@@ -33,7 +71,13 @@ def save_endpoints():
     data = request.json
     if not isinstance(data, list):
         return jsonify({"success": False, "error": "Invalid format"})
+    
     save_data(data)
+    generate_pjsip(data)
+    
+    # Reload Asterisk PJSIP
+    os.system("asterisk -rx 'pjsip reload'")
+    
     return jsonify({"success": True})
 
 # IMPORTANT: static file handler
