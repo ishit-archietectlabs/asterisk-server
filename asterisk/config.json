@@ -1,6 +1,6 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "slug": "asterisk_server",
   "description": "Asterisk SIP Server for Home Assistant with PJSIP and WebRTC support",
   "startup": "services",
