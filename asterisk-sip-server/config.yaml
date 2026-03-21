@@ -1,0 +1,47 @@
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
+name: "Asterisk SIP Server"
+version: "1.1.4"
+slug: "asterisk-sip-server"
+description: "Asterisk PBX server with PJSIP and WebRTC support"
+startup: "services"
+boot: "auto"
+host_network: true
+privileged: true
+hassio_api: true
+hassio_role: "manager"
+ingress: true
+ingress_port: 8090
+panel_icon: "mdi:phone-settings"
+panel_title: "Asterisk Panel"
+cap_add:
+  - NET_ADMIN
+  - SYS_ADMIN
+  - SYS_NICE
+  - SYS_RESOURCE
+  - SYS_PTRACE
+ports:
+  5060/udp: 5060
+  5060/tcp: 5060
+  8088/tcp: 8088
+map:
+  - config:rw
+  - ssl:ro
+options:
+  agent_password: "changeme_agent"
+  client_default_password: "changeme_client"
+  domain: "localhost"
+  certfile: ""
+  keyfile: ""
+  log_level: "info"
+schema:
+  agent_password: "str"
+  client_default_password: "str"
+  domain: "str"
+  certfile: "str"
+  keyfile: "str"
+  log_level: "list(debug|info|notice|warning|error|fatal|panic)"
+arch:
+  - armv7
+  - aarch64
+  - amd64
+  - i386
