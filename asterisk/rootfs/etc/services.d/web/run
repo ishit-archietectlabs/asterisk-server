@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv bashio
+
+bashio::log.info "Starting Web UI..."
+
+exec python3 /app/server.py
