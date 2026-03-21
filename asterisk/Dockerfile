@@ -1,7 +1,10 @@
 FROM ghcr.io/home-assistant/base:latest
 
-# Install Asterisk python3 dos2unix
-RUN apk add --no-cache asterisk python3 dos2unix
+# Install Asterisk python3 dos2unix pip
+RUN apk add --no-cache asterisk python3 dos2unix py3-pip
+
+# Install Flask
+RUN pip3 install flask
 
 # Create required directories
 RUN mkdir -p /var/lib/asterisk \
