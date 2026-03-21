@@ -1,19 +1,17 @@
-ARG BUILD_FROM
-FROM ${BUILD_FROM}
+# Final Dockerfile for Asterisk SIP Server (Alpine-based)
+FROM ghcr.io/home-assistant/base:latest
 
-# Install Asterisk, Node.js, and dependencies (Debian Bullseye for RPI/ARM stability)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends \
-        asterisk \
-        asterisk-core-sounds-en \
-        nodejs \
-        npm \
-        curl \
-        bash \
-        jq \
-        openssl \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install Asterisk and dependencies
+RUN apk add --no-cache \
+    asterisk \
+    asterisk-sample-config \
+    asterisk-sounds-en \
+    nodejs \
+    npm \
+    curl \
+    bash \
+    jq \
+    openssl
 
 # Create required directories
 RUN mkdir -p /etc/asterisk \
@@ -39,5 +37,3 @@ RUN if [ -f package.json ]; then npm install --production; fi
 # Copy run script
 COPY run.sh /
 RUN chmod a+x /run.sh
-
-CMD ["/run.sh"]
