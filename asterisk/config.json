@@ -1,10 +1,11 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "slug": "asterisk_server",
   "description": "Asterisk SIP Server for Home Assistant with PJSIP and WebRTC support",
   "startup": "services",
   "boot": "auto",
+  "init": false,
   "host_network": true,
   "privileged": ["NET_ADMIN", "SYS_ADMIN", "SYS_NICE", "SYS_RESOURCE", "SYS_PTRACE"],
   "hassio_api": true,
