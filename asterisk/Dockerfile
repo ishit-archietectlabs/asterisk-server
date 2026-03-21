@@ -4,7 +4,7 @@ FROM ghcr.io/home-assistant/base:latest
 RUN apk add --no-cache asterisk python3 dos2unix py3-pip
 
 # Install Flask
-RUN pip3 install flask
+RUN pip3 install --break-system-packages flask
 
 # Create required directories
 RUN mkdir -p /var/lib/asterisk \
