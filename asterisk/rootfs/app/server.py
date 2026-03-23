@@ -33,7 +33,7 @@ def generate_pjsip(endpoints):
 [global]
 type=global
 user_agent=HA-Asterisk
-endpoint_identifier_order=username,ip
+endpoint_identifier_order=auth_username,username,ip
 
 [transport-ws]
 type=transport
@@ -83,7 +83,7 @@ dtls_setup=actpass
 auth={user}-auth
 aors={user}-aor
 transport=transport-ws
-identify_by=username
+identify_by=auth_username
 
 [{user}-auth]
 type=auth
