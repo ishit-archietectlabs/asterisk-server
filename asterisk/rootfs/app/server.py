@@ -136,10 +136,12 @@ def save_endpoints():
         generate_extensions()
 
         # RELOAD ASTERISK PROPERLY
+        logging.info("DEBUG: Wrote pjsip.conf to /etc/asterisk/pjsip.conf")
+        logging.info(f"DEBUG: File exists: {os.path.exists('/etc/asterisk/pjsip.conf')}")
+        os.system("asterisk -rx 'core reload'")
         os.system("asterisk -rx 'module reload res_pjsip.so'")
-        os.system("asterisk -rx 'pjsip reload'")
 
-        logging.info("Asterisk reloaded successfully")
+        logging.info("Asterisk reloaded using core reload and module reload")
 
         return jsonify({"success": True})
 
