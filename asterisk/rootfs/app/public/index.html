@@ -187,7 +187,9 @@
 
   <div id="toast">Changes saved & Asterisk reloaded!</div>
 
+  <script src="jssip.bundle.js"></script>
   <script>
+    console.log("JsSIP Type (Panel):", typeof JsSIP);
     let endpoints = [];
 
     async function loadEndpoints() {
