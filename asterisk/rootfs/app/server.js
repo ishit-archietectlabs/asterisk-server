@@ -57,9 +57,9 @@ direct_media=no
 force_rport=yes
 rewrite_contact=yes
 rtp_symmetric=yes
-transport=transport-ws
-auth=${ep.username}-auth
 aors=${ep.username}-aor
+transport=transport-ws
+identify_by=username
 callerid="${ep.name}" <${ep.extension}>
 
 [${ep.username}-auth]

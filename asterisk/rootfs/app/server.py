@@ -76,9 +76,10 @@ ice_support=yes
 media_encryption=dtls
 dtls_verify=fingerprint
 dtls_setup=actpass
-transport=transport-ws
 auth={user}-auth
 aors={user}-aor
+transport=transport-ws
+identify_by=username
 
 [{user}-auth]
 type=auth
