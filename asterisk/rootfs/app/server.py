@@ -56,9 +56,13 @@ allow=ulaw
 """
 
     for ep in endpoints:
-        ext = str(ep.get("extension"))
-        user = str(ep.get("username"))
-        pwd = str(ep.get("password"))
+        ext = str(ep.get("extension") or "")
+        user = str(ep.get("username") or "")
+        pwd = str(ep.get("password") or "")
+
+        if not user or not ext:
+            logging.error(f"Skipping invalid endpoint: {ep}")
+            continue
 
         config += f"""
 [{user}]
@@ -72,6 +76,7 @@ ice_support=yes
 media_encryption=dtls
 dtls_verify=fingerprint
 dtls_setup=actpass
+transport=transport-ws
 auth={user}-auth
 aors={user}-aor
 
