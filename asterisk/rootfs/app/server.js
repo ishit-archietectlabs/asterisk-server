@@ -53,7 +53,7 @@ force_rport=yes
 rewrite_contact=yes
 rtp_symmetric=yes
 auth=${ep.username}-auth
-aors=${ep.username}
+aors=${ep.username}-aor
 callerid="${ep.name}" <${ep.extension}>
 
 [${ep.username}-auth]
@@ -62,7 +62,7 @@ auth_type=userpass
 username=${ep.username}
 password=${ep.password}
 
-[${ep.username}]
+[${ep.username}-aor]
 type=aor
 max_contacts=5
 remove_existing=yes

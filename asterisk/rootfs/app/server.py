@@ -51,22 +51,21 @@ allow=ulaw
         pwd = str(ep.get("password"))
 
         config += f"""
-
 [{ext}]
 type=endpoint
 context=default
 disallow=all
 allow=ulaw
-auth={ext}
-aors={ext}
+auth={ext}-auth
+aors={ext}-aor
 
-[{ext}]
+[{ext}-auth]
 type=auth
 auth_type=userpass
 username={user}
 password={pwd}
 
-[{ext}]
+[{ext}-aor]
 type=aor
 max_contacts=1
 """
