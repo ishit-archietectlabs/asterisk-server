@@ -165,8 +165,24 @@ def save_endpoints():
             logging.info(f"DEBUG: File exists: {os.path.exists('/etc/asterisk/pjsip.conf')}")
             os.system("asterisk -rx 'core restart now'")
 
-            logging.info("Asterisk restarted using core restart now")
-            return jsonify({"success": True, "message": "Updated and reloaded"})
+            logging.info("Asterisk restarted. Waiting 5s for initialization...")
+            time.sleep(5)
+
+            # DIAGNOSTIC COMMANDS
+            commands = [
+                "pjsip show endpoints",
+                "pjsip show endpoint support",
+                "pjsip show aors",
+                "pjsip show identifies",
+                "module show like res_pjsip_endpoint_identifier"
+            ]
+            
+            for cmd in commands:
+                logging.info(f"--- DIAGNOSTIC: {cmd} ---")
+                os.system(f"asterisk -rx '{cmd}'")
+                logging.info("--------------------------")
+
+            return jsonify({"success": True, "message": "Updated and restarted with diagnostics"})
         else:
             return jsonify({"success": True, "message": "No changes made (empty list detected)"})
 

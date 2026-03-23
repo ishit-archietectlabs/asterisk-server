@@ -116,7 +116,29 @@ match=192.168.1.182/32
                     console.error('[ERROR] Failed to restart Asterisk:', stderr);
                     return res.status(500).json({ success: false, error: stderr });
                 }
-                res.json({ success: true, message: 'Endpoints saved atomically and Asterisk restarted.' });
+                
+                console.log('[DEBUG] Asterisk restarted. Waiting 5s for initialization...');
+                
+                // DIAGNOSTICS
+                setTimeout(() => {
+                    const commands = [
+                        'pjsip show endpoints',
+                        'pjsip show endpoint support',
+                        'pjsip show aors',
+                        'pjsip show identifies',
+                        'module show like res_pjsip_endpoint_identifier'
+                    ];
+
+                    commands.forEach(cmd => {
+                        exec(`asterisk -rx "${cmd}"`, (err, out) => {
+                            console.log(`--- DIAGNOSTIC: ${cmd} ---`);
+                            console.log(out || err);
+                            console.log('--------------------------');
+                        });
+                    });
+                }, 5000);
+
+                res.json({ success: true, message: 'Endpoints saved atomically and Asterisk restarted with diagnostics.' });
             });
         }, 1000);
     } catch (e) {
