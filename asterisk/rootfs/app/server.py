@@ -32,6 +32,7 @@ def generate_pjsip(endpoints):
 [global]
 type=global
 user_agent=HA-Asterisk
+endpoint_identifier_order=username,ip
 
 [transport-ws]
 type=transport
