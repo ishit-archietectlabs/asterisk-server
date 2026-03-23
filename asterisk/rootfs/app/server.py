@@ -33,10 +33,20 @@ def generate_pjsip(endpoints):
 type=global
 user_agent=HA-Asterisk
 
+[transport-ws]
+type=transport
+protocol=ws
+bind=0.0.0.0:8088
+
+[transport-wss]
+type=transport
+protocol=wss
+bind=0.0.0.0:8089
+
 [transport-udp]
 type=transport
 protocol=udp
-bind=0.0.0.0
+bind=0.0.0.0:5060
 
 [default]
 type=endpoint
@@ -56,6 +66,12 @@ type=endpoint
 context=default
 disallow=all
 allow=ulaw
+webrtc=yes
+dtls_auto_generate_cert=yes
+ice_support=yes
+media_encryption=dtls
+dtls_verify=fingerprint
+dtls_setup=actpass
 auth={ext}-auth
 aors={ext}-aor
 
