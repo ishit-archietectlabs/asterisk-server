@@ -61,7 +61,7 @@ allow=ulaw
         pwd = str(ep.get("password"))
 
         config += f"""
-[{ext}]
+[{user}]
 type=endpoint
 context=default
 disallow=all
@@ -72,16 +72,16 @@ ice_support=yes
 media_encryption=dtls
 dtls_verify=fingerprint
 dtls_setup=actpass
-auth={ext}-auth
-aors={ext}-aor
+auth={user}-auth
+aors={user}-aor
 
-[{ext}-auth]
+[{user}-auth]
 type=auth
 auth_type=userpass
 username={user}
 password={pwd}
 
-[{ext}-aor]
+[{user}-aor]
 type=aor
 max_contacts=1
 """
