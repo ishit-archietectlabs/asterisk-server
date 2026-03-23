@@ -33,7 +33,7 @@ def generate_pjsip(endpoints):
 [global]
 type=global
 user_agent=HA-Asterisk
-endpoint_identifier_order=username,ip
+endpoint_identifier_order=ip,username
 
 [transport-ws]
 type=transport
@@ -83,7 +83,6 @@ dtls_setup=actpass
 auth={user}-auth
 aors={user}-aor
 transport=transport-ws
-identify_by=username
 
 [{user}-auth]
 type=auth
@@ -94,6 +93,11 @@ password={pwd}
 [{user}-aor]
 type=aor
 max_contacts=1
+
+[{user}-identify]
+type=identify
+endpoint={user}
+match=192.168.1.182/32
 """
 
     if valid_endpoints == 0:
