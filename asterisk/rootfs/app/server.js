@@ -85,19 +85,27 @@ remove_existing=yes
         extensionsConfig += ` same => n,Hangup()\n\n`;
     });
 
+    if (endpoints.length === 0) {
+        console.warn('[WARN] No endpoints to generate. Skipping config write.');
+        return res.json({ success: true, message: 'Endpoints saved but config write skipped (no endpoints).' });
+    }
+
     try {
         fs.writeFileSync(PJSIP_FILE, pjsipConfig);
         fs.writeFileSync(EXTENSIONS_FILE, extensionsConfig);
 
-        // Reload Asterisk seamlessly
-        console.log(`[DEBUG] Wrote pjsip.conf to ${PJSIP_FILE}`);
-        exec('asterisk -rx "core reload" && asterisk -rx "module reload res_pjsip.so"', (error, stdout, stderr) => {
-            if (error) {
-                console.error('[ERROR] Failed to reload Asterisk:', stderr);
-                return res.status(500).json({ success: false, error: stderr });
-            }
-            res.json({ success: true, message: 'Endpoints saved and Asterisk fully reloaded (core + module).' });
-        });
+        // Reload Asterisk seamlessly with delay
+        console.log(`[DEBUG] Wrote pjsip.conf to ${PJSIP_FILE}. Waiting 1s before reload...`);
+        
+        setTimeout(() => {
+            exec('asterisk -rx "core reload" && asterisk -rx "module reload res_pjsip.so"', (error, stdout, stderr) => {
+                if (error) {
+                    console.error('[ERROR] Failed to reload Asterisk:', stderr);
+                    return res.status(500).json({ success: false, error: stderr });
+                }
+                res.json({ success: true, message: 'Endpoints saved and Asterisk fully reloaded (core + module).' });
+            });
+        }, 1000);
     } catch (e) {
         res.status(500).json({ success: false, error: e.message });
     }

@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 import json
 import os
 import logging
+import time
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -56,6 +57,7 @@ disallow=all
 allow=ulaw
 """
 
+    valid_endpoints = 0
     for ep in endpoints:
         ext = str(ep.get("extension") or "")
         user = str(ep.get("username") or "")
@@ -65,6 +67,7 @@ allow=ulaw
             logging.error(f"Skipping invalid endpoint: {ep}")
             continue
 
+        valid_endpoints += 1
         config += f"""
 [{user}]
 type=endpoint
@@ -93,11 +96,16 @@ type=aor
 max_contacts=1
 """
 
+    if valid_endpoints == 0:
+        logging.warning("No valid endpoints to generate. Skipping config write.")
+        return False
+
     with open("/etc/asterisk/pjsip.conf", "w") as f:
         f.write(config)
 
     logging.info("Generated pjsip.conf:")
     logging.info(config)
+    return True
 
 def generate_extensions():
     os.makedirs("/etc/asterisk", exist_ok=True)
@@ -131,19 +139,24 @@ def save_endpoints():
         # Save JSON
         save_data(data)
 
-        # Generate configs
-        generate_pjsip(data)
-        generate_extensions()
+        # Generate configs and only reload if something changed
+        if generate_pjsip(data):
+            generate_extensions()
 
-        # RELOAD ASTERISK PROPERLY
-        logging.info("DEBUG: Wrote pjsip.conf to /etc/asterisk/pjsip.conf")
-        logging.info(f"DEBUG: File exists: {os.path.exists('/etc/asterisk/pjsip.conf')}")
-        os.system("asterisk -rx 'core reload'")
-        os.system("asterisk -rx 'module reload res_pjsip.so'")
+            # Wait for file system to settle
+            logging.info("Waiting 1s before reload...")
+            time.sleep(1)
 
-        logging.info("Asterisk reloaded using core reload and module reload")
+            # RELOAD ASTERISK PROPERLY
+            logging.info("DEBUG: Wrote pjsip.conf to /etc/asterisk/pjsip.conf")
+            logging.info(f"DEBUG: File exists: {os.path.exists('/etc/asterisk/pjsip.conf')}")
+            os.system("asterisk -rx 'core reload'")
+            os.system("asterisk -rx 'module reload res_pjsip.so'")
 
-        return jsonify({"success": True})
+            logging.info("Asterisk reloaded using core reload and module reload")
+            return jsonify({"success": True, "message": "Updated and reloaded"})
+        else:
+            return jsonify({"success": True, "message": "No changes made (empty list detected)"})
 
     except Exception as e:
         logging.error(f"Error: {e}")
