@@ -1,6 +1,6 @@
 {
   "name": "Asterisk SIP Server",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "slug": "asterisk_server",
   "description": "Asterisk SIP Server for Home Assistant with PJSIP and WebRTC support",
   "startup": "services",
@@ -17,7 +17,8 @@
   "ports": {
     "5060/udp": 5060,
     "5060/tcp": 5060,
-    "8088/tcp": 8088
+    "8088/tcp": 8088,
+    "8090/tcp": 8090
   },
   "map": ["config:rw", "ssl:ro"],
   "options": {
