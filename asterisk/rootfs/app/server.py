@@ -33,7 +33,7 @@ def generate_pjsip(endpoints):
 [global]
 type=global
 user_agent=HA-Asterisk
-endpoint_identifier_order=auth_username,username,ip
+endpoint_identifier_order=username,ip
 
 [transport-ws]
 type=transport
@@ -83,7 +83,7 @@ dtls_setup=actpass
 auth={user}-auth
 aors={user}-aor
 transport=transport-ws
-identify_by=auth_username
+identify_by=username
 
 [{user}-auth]
 type=auth
@@ -159,10 +159,9 @@ def save_endpoints():
             # RELOAD ASTERISK PROPERLY
             logging.info("DEBUG: Wrote pjsip.conf to /etc/asterisk/pjsip.conf")
             logging.info(f"DEBUG: File exists: {os.path.exists('/etc/asterisk/pjsip.conf')}")
-            os.system("asterisk -rx 'core reload'")
-            os.system("asterisk -rx 'module reload res_pjsip.so'")
+            os.system("asterisk -rx 'core restart now'")
 
-            logging.info("Asterisk reloaded using core reload and module reload")
+            logging.info("Asterisk restarted using core restart now")
             return jsonify({"success": True, "message": "Updated and reloaded"})
         else:
             return jsonify({"success": True, "message": "No changes made (empty list detected)"})
