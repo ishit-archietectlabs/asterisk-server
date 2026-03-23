@@ -33,7 +33,7 @@ def generate_pjsip(endpoints):
 [global]
 type=global
 user_agent=HA-Asterisk
-endpoint_identifier_order=auth_username,username,ip
+endpoint_identifier_order=username,ip
 
 [transport-ws]
 type=transport
@@ -83,7 +83,7 @@ dtls_setup=actpass
 auth={user}-auth
 aors={user}-aor
 transport=transport-ws
-identify_by=auth_username
+identify_by=username
 
 [{user}-auth]
 type=auth
@@ -97,15 +97,24 @@ max_contacts=1
 """
 
     if valid_endpoints == 0:
-        logging.warning("No valid endpoints to generate. Skipping config write.")
+        logging.warning("No valid endpoints to generate. Skipping config write to protect existing setup.")
         return False
 
-    with open("/etc/asterisk/pjsip.conf", "w") as f:
-        f.write(config)
-
-    logging.info("Generated pjsip.conf:")
-    logging.info(config)
-    return True
+    # Atomic write to pjsip.conf
+    temp_path = "/etc/asterisk/pjsip.conf.tmp"
+    final_path = "/etc/asterisk/pjsip.conf"
+    
+    try:
+        with open(temp_path, "w") as f:
+            f.write(config)
+        os.replace(temp_path, final_path)
+        logging.info(f"Atomically updated {final_path}")
+        logging.info("Generated pjsip.conf:")
+        logging.info(config)
+        return True
+    except Exception as e:
+        logging.error(f"Failed to atomically write pjsip.conf: {e}")
+        return False
 
 def generate_extensions():
     os.makedirs("/etc/asterisk", exist_ok=True)
